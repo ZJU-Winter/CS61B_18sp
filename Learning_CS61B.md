@@ -51,3 +51,104 @@ public class LargerDemo {
 }
 ```
 
+### 1.2 Objects
+
+```java
+public class Dog {
+    public static void makeNoise() {
+        System.out.println("Bark!");
+    }
+}
+```
+
+```java
+public class DogLauncher {
+    public static void main(String[] args) {
+        Dog.makeNoise();
+    }
+}
+```
+
+* Every method is associated with class
+* To run a class, we must define a main method
+  * Not all classes have a main method
+
+**Instance Variables and Object Instantiation**
+
+```java
+public class Dog {
+    public int weightInPounds;// instance variable
+
+    public Dog(int w) {//constructor
+        weightInPounds = w;
+    }
+
+    public void makeNoise() {
+      //Non-static method or instance method
+      //if the method needs to use instance variabls, it should be 								non-static
+      //if the method is going to be invoked by an instance, it should be 				non-static
+        if (weightInPounds < 10) {
+            System.out.println("yipyipyip!");
+        } else if (weightInPounds < 30) {
+            System.out.println("bark. bark.");
+        } else {
+            System.out.println("woof!");
+        }    
+    }
+}
+```
+
+
+
+```java
+public class DogLauncher {
+    public static void main(String[] args) {
+        Dog d = new Dog(20);
+        d.makeNoise();
+    }
+}
+```
+
+#### Static and Instance Methods
+
+* Static methods are invoked using the CLASS NAME
+
+```java
+public static Dog maxDog(Dog d1, Dog d2) {
+  if (d1.weightInpounds > d2.weightInpounds) {
+    return d1;
+  } else
+    return d2;
+}
+
+Dog d1 = new Dog(10);
+Dog d2 = new Dog(100);
+Dog bigger = Dog.maxDog(d1,d2);
+```
+
+
+
+* Instance methods are invoked using an INSTANCE NAME
+
+```java
+public Dog maxDog(Dog d) {
+  if (this.weightInpounds > d.weightInpounds)
+    return this;
+  else
+    return d;
+}
+
+Dog d1 = new Dog(10);
+Dog d2 = new Dog(100);
+Dog bigger = d1.maxDog(d2);
+```
+
+
+
+* Static methods can't access "my" instance variables
+
+
+
+### Week2
+
+ 
