@@ -81,6 +81,6 @@ public class Planet {
         this.yyPos = this.yyPos + yyVel*dt;
     }
     public void draw(){
-        StdDraw.picture(this.xxPos/Scale_parameter,this.yyPos/Scale_parameter,imgFileName);
+        StdDraw.picture(this.xxPos/Scale_parameter,this.yyPos/Scale_parameter, "./images/" + this.imgFileName);
     }
 }
