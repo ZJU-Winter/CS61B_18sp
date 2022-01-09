@@ -1,7 +1,7 @@
 public class NBody {
-    public static String BackgroundImage = "images/starfield.jpg";
-    public static double Scale_parameter = 5e8;
-    public static int Pause_time = 10;
+    private static String BackgroundImage = "images/starfield.jpg";
+    private static double Scale_parameter = 5e8;
+    private static int Pause_time = 10;
     public static double readRadius(String filename){
         In in = new In(filename);
         int N = in.readInt();
@@ -9,11 +9,6 @@ public class NBody {
         return Radius;
     }
 
-    public static int readN(String filename){
-        In in = new In(filename);
-        int N = in.readInt();
-        return N;
-    }
     public static Planet[] readPlanets(String filename){
         In in = new In(filename);
         int N = in.readInt();
