@@ -23,7 +23,7 @@ public class NBody {
             yyVel=in.readDouble();
             mass=in.readDouble();
             imgFileName=in.readString();
-            planets[i]=new Planet(xxPos,yyPos,xxVel,yyVel,mass,imgFileName);
+            planets[i]=new Planet(xxPos,yyPos,xxVel,yyVel,mass,"./images/" + imgFileName);
         }
         return planets;
     }
