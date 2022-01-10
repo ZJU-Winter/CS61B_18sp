@@ -1,3 +1,4 @@
+import javax.naming.ldap.UnsolicitedNotificationListener;
 import java.util.Formatter;
 
 /**
@@ -29,7 +30,7 @@ public class IntList {
      * A List with null rest, and first = 0.
      */
     public IntList() {
-    /* NOTE: public IntList () { }  would also work. */
+        /* NOTE: public IntList () { }  would also work. */
         this(0, null);
     }
 
@@ -82,7 +83,12 @@ public class IntList {
 
     public static IntList dcatenate(IntList A, IntList B) {
         //TODO:  fill in method
-        return null;
+        IntList res = A;
+        while (A.rest != null) {
+            A = A.rest;
+        }
+        A.rest = B;
+        return res;
     }
 
     /**
@@ -91,22 +97,34 @@ public class IntList {
      */
     public static IntList catenate(IntList A, IntList B) {
         //TODO:  fill in method
-        return null;
+        IntList res = new IntList(0, null);
+        IntList ptr = res;
+        IntList A_Temp = A;
+        IntList B_Temp = B;
+        while (true) {
+            ptr.first = A_Temp.first;
+            ptr.rest = new IntList(0, null);
+            ptr = ptr.rest;
+            A_Temp = A_Temp.rest;
+            if (A_Temp.rest == null) {
+                ptr.first = A_Temp.first;
+                break;
+            }
+        }
+        ptr.rest = new IntList(0, null);
+        ptr = ptr.rest;
+        while (true) {
+            ptr.first = B_Temp.first;
+            ptr.rest = new IntList(0, null);
+            ptr = ptr.rest;
+            B_Temp = B_Temp.rest;
+            if (B_Temp.rest == null) {
+                ptr.first = B_Temp.first;
+                break;
+            }
+        }
+        return res;
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
     /**
