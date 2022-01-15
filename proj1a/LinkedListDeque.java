@@ -58,10 +58,79 @@ public class LinkedListDeque<Item> {
         }
     }
 
-    public static void main(String[] args) {
-        LinkedListDeque<Integer> Deque = new LinkedListDeque<Integer>(2);
-        Deque.addFirst(1);
-        Deque.addLast(3);
+    public boolean isEmpty() {
+        return (size == 0);
     }
+
+    public int size() {
+        return size;
+    }
+
+    public void printDeque() {
+        if (isEmpty()) {
+            System.out.println("It is an empty Deque!");
+        }
+        Node ptr = sentinel.next;
+        while (ptr.item != null) {
+            System.out.print(ptr.item + " ");
+            ptr = ptr.next;
+        }
+    }
+
+    public Item removeFirst() {
+        if (size == 0) {
+            return null;
+        }
+        size -= 1;
+        Item value = sentinel.next.item;
+        Node reminderOfOriginal = sentinel.next.next;
+        sentinel.next = reminderOfOriginal;
+        reminderOfOriginal.prev = sentinel;
+        return value;
+    }
+
+    public Item removeLast() {
+        if (size == 0) {
+            return null;
+        }
+        size -= 1;
+        Item value = sentinel.prev.item;
+        Node reminderOfOriginal = sentinel.prev.prev;
+        sentinel.prev = reminderOfOriginal;
+        reminderOfOriginal.next = sentinel;
+        return value;
+    }
+
+    public Item get(int index) {
+        if (index < 0 || index > size) {
+            return null;
+        }
+        Node ptr = sentinel.next;
+        int i = 0;
+        while (i < index) {
+            ptr = ptr.next;
+            i += 1;
+        }
+        return ptr.item;
+    }
+
+    public Item getRecursive(int index) {
+        if (index < 0 || index > size) {
+            return null;
+        } else {
+            return getRecursiveHelper(sentinel.next, index);
+        }
+    }
+
+    private Item getRecursiveHelper(Node ptr, int index) {
+        if (ptr == null)
+            return null;
+        else if (index == 0) {
+            return ptr.item;
+        } else {
+            return getRecursiveHelper(ptr.next, index - 1);
+        }
+    }
+    
 
 }
