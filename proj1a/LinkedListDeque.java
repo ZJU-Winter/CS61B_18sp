@@ -131,6 +131,12 @@ public class LinkedListDeque<Item> {
             return getRecursiveHelper(ptr.next, index - 1);
         }
     }
-    
+
+    public static void main(String[] args) {
+        LinkedListDeque<Integer> Deque = new LinkedListDeque<Integer>(2);
+        Deque.addLast(3);
+        Deque.addLast(4);
+        Deque.removeLast();
+    }
 
 }
