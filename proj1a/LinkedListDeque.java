@@ -26,13 +26,14 @@ public class LinkedListDeque<T> {
         sentinel.next = sentinel;
         sentinel.prev = sentinel;
     }
-
+    /*
     public LinkedListDeque(T item) {
         size = 1;
         sentinel = new Node();
         sentinel.next = new Node(sentinel, item, sentinel);
         sentinel.prev = sentinel.next;
     }
+    */
 
     public void addFirst(T item) {
         size += 1;
