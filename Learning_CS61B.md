@@ -899,15 +899,13 @@ public static void main(String[] args) {
 
 Consider the function call foo.bar(x1), where foo has static type TPrime, the x1 has static type T1.
 
-
-
 At compile time, the compiler verifies that TPrime has a method that can handle T1. It then records the signature of this method.
 
 *   Note: if there are multiple methods that can handle T1, the compiler records the "most specific" one. For example, if T1 = Dog, and TPrime has bar(Dog) and bar(Animal), it will record bar(Dog).
 
 At the run time, if foo's dynamic type overrides the **recorded signature**, use the override one! Otherwise, use TPrime's version.
 
-### Inheritance 2
+### Inheritance: Extends, Casting, HoFs
 
 #### Implementation Inheritance: Extends
 
@@ -994,5 +992,174 @@ public VengefulSLList(Item x) {
 }
 ```
 
+#### The Object class
 
+*   Every type in Java is a descendant of the Object class
 
+<img src="/Users/winter/Desktop/Introduction to Algorithms/CS61B/Learning_CS61B.assets/image-20220116192707897.png" alt="image-20220116192707897" style="zoom:50%;" />
+
+#### Type Checking and Casting
+
+*   Dynamic Method Selection
+
+![img](/Users/winter/Desktop/Introduction to Algorithms/CS61B/Learning_CS61B.assets/dynamic_selection.png)
+
+<img src="/Users/winter/Desktop/Introduction to Algorithms/CS61B/Learning_CS61B.assets/image-20220116210106172.png" alt="image-20220116210106172" style="zoom:30%;" />
+
+*   Compile time
+    *   Compiler allows assignments based on compile-time types
+
+<img src="/Users/winter/Desktop/Introduction to Algorithms/CS61B/Learning_CS61B.assets/image-20220116210444382.png" alt="image-20220116210444382" style="zoom:50%;" />
+
+*   Compile-time Types and Expressions
+
+    ```java
+    SLList<Integer> sl = new VengefulSLList<Integer>();		
+    ```
+
+    *   Compile-time type of right hand side expression is VengefulSLList
+    *   A VengefulSLList `is-an` SLList, so assignment is allowed
+
+    ```java
+    VengefulSLList<Integer> sl = new SLList<Integer>();	
+    ```
+
+    *    Compile-time type of right hand side expression is SLList
+
+    *   An SLList is not necessarily a VengefulSLList, compilation error!
+
+*   Expressions
+
+    *   expressions using the `new` keyword also have compile-time types
+
+    ```java
+    SLList<Integer> sl = new VengefulSLList<Integer>();
+    
+    VengefulSLList<Integer> vsl = new SLList<Integer>();//error!
+    ```
+
+    *   method calls have compile-time types equal to their declared type
+
+    ```java
+    public static Dog maxDog(Dog d1, Dog d2) { ... }
+    
+    Poodle frank = new Poodle("Frank", 5);
+    Poodle frankJr = new Poodle("Frank Jr.", 15);
+    
+    Dog largerDog = maxDog(frank, frankJr);
+    Poodle largerPoodle = maxDog(frank, frankJr); //does not compile! RHS has compile-time type Dog
+    ```
+
+*   Casting
+
+    ```java
+    Poodle largerPoodle = (Poodle) maxDog(frank, frankJr);
+    ```
+
+*   Higher Order Function
+
+    *   A function that treats another function as data
+
+    ```python
+    def tenX(x):
+      return 10*x
+    
+    def de_twice(f,x):
+      return f(f(x))
+    
+    print(do_twice(tenX,2))#200 
+    ```
+
+    ```java
+    public interface IntUnaryFunction {
+        public int apply(int x);
+    }
+    ```
+
+    ```java
+    public class TenX implements IntUnaryFunction {
+        public int apply(int x) {
+            return 10 * x;
+        }
+    }
+    ```
+
+    ```java
+    public class HoFDemo {
+        public static int do_twice(IntUnaryFunction f, int x) {
+            return f.apply(f.apply(x));
+        }
+    
+        public static void main(String[] args) {
+            TenX tenX = new TenX();
+            System.out.println(do_twice(tenX, 2));
+        }
+    }
+    ```
+
+    
+
+### Inheritance: Comparables, Abstract Classes, HoFs
+
+#### Subtype Polymorphism
+
+*   Subtype Polymorphism vs.  Explicit Higher Order Function
+
+    *   Explicit Higher Order Function
+
+    ```python
+    def print_larger(x,y,compare,stringify):
+      if compare(x,y):
+        return stringify(x)
+      return stringif(y)
+    ```
+
+    *   Subtype Polymorphism
+
+    ```python
+    def print_larger(x,y):
+      if x.largerthan(y):
+        return x.str()
+      return y.str()
+    ```
+
+#### The Max Function
+
+```java
+public static Object max(Object[] items) {
+    int maxDex = 0;
+    for (int i = 0; i < items.length; i += 1) {
+        if (items[i] > items[maxDex]) {//error!
+            maxDex = i;
+        }
+    }
+    return items[maxDex];
+}
+
+public static void main(String[] args) {
+    Dog[] dogs = {new Dog("Elyse", 3), new Dog("Sture", 9), new Dog("Benjamin", 15)};
+    Dog maxDog = (Dog) max(dogs);
+    maxDog.bark();
+}
+```
+
+Errors while comparing, one solution is to write a `maxDog` in thee dog class
+
+```java
+public static Dog maxDog(Dog[] dogs) {
+    if (dogs == null || dogs.length == 0) {
+        return null;
+    }
+    Dog maxDog = dogs[0];
+    for (Dog d : dogs) {
+        if (d.size > maxDog.size) {
+            maxDog = d;
+        }
+    }
+    return maxDog;
+}
+```
+
+then we'd have to do the same for any class we define later.
+
+We'd need to write a `maxCat` function, a `maxPenguin` function 
