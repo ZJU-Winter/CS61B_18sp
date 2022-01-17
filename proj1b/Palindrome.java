@@ -1,4 +1,4 @@
-public class Palindrome extends LinkedListDeque<Character> {
+public class Palindrome {
     public Deque<Character> wordToDeque(String word) {
         if (word == null) {
             return null;
@@ -32,7 +32,7 @@ public class Palindrome extends LinkedListDeque<Character> {
         return newHelper(word, 0, word.length() - 1, cc);
     }
 
-    public boolean isPalindromeRecursive(String word) {
+    private boolean isPalindromeRecursive(String word) {
         return isPalindromeRecursiveHelper(word, 0, word.length() - 1);
     }
 

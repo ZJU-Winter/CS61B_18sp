@@ -134,13 +134,14 @@ public class ArrayDeque<T> implements Deque<T> {
         return temp;
     }
 
+    /*
     public static void main(String[] args) {
         ArrayDeque<Integer> Deque = new ArrayDeque();
         Deque.addFirst(0);
         Deque.addFirst(1);
         System.out.println(Deque.removeFirst());
         System.out.println(Deque.removeFirst());
-    }
+    }*/
 
 }
 
