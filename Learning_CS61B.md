@@ -1163,3 +1163,60 @@ public static Dog maxDog(Dog[] dogs) {
 then we'd have to do the same for any class we define later.
 
 We'd need to write a `maxCat` function, a `maxPenguin` function 
+
+Without overriding the operators, we use `interface` with `compareTo`to guarantee that a `Dog` class *overrides the operator* 
+
+```java
+OurComparable.java
+
+public interface OurComparable {
+    public int compareTo(Object o);
+}
+```
+
+```java
+Dog.java
+  
+public class Dog implements OurComparable {
+    private String name;
+    private int size;
+
+    public Dog(String n, int s) {
+        name = n;
+        size = s;
+    }
+
+    public void bark() {
+        System.out.println(name + " says: bark");
+    }
+
+    public int compareTo(Object o) {//important!!
+        Dog dog = (Dog) o;
+        return this.size - dog.size;
+    }
+}
+```
+
+```java
+Maximizer.java
+  
+public class Maximizer {
+    public static OurComparable max(OurComparable[] items) {
+        int maxDex = 0;
+        for (int i = 0; i < items.length; i += 1) {
+            int cmp = items[i].compareTo(items[maxDex]);
+            if (cmp > 0) {
+                maxDex = i;
+            }
+        }
+        return items[maxDex];
+    }
+
+    public static void main(String[] args) {
+        Dog[] dogs = { new Dog("1", 10), new Dog("2", 15), new Dog("Max", 20) };
+        Dog maxDog = (Dog) Maximizer.max(dogs);
+        maxDog.bark();
+    }
+}
+```
+
