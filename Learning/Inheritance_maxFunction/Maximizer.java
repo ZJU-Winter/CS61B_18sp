@@ -1,7 +1,3 @@
-import javax.crypto.spec.DESKeySpec;
-
-import org.jcp.xml.dsig.internal.dom.DOMPGPData;
-
 public class Maximizer {
     public static OurComparable max(OurComparable[] items) {
         int maxDex = 0;
