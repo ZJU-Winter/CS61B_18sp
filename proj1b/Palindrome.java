@@ -24,7 +24,7 @@ public class Palindrome {
                 leftToRight += L.removeFirst();
                 rightToLeft += L.removeLast();
             }
-            return (leftToRight.equalsIgnoreCase(rightToLeft));
+            return (leftToRight.equals(rightToLeft));
         }
     }
 
@@ -40,9 +40,7 @@ public class Palindrome {
         if (word.equals("") || front >= back) {
             return true;
         } else {
-            return (Character.toUpperCase(word.charAt(front))
-                    ==
-                    Character.toUpperCase(word.charAt(back)))
+            return (word.charAt(front) == word.charAt(back))
                     &&
                     isPalindromeRecursiveHelper(word, front + 1, back - 1);
         }

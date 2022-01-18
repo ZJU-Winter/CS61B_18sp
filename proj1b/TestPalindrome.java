@@ -7,8 +7,6 @@ public class TestPalindrome {
     // new Palindromes, or the autograder might be upset.
     static Palindrome palindrome = new Palindrome();
 
-    static CharacterComparator cc = new OffByOne();
-
     @Test
     public void testWordToDeque() {
         Deque d = palindrome.wordToDeque("persiflage");
@@ -23,20 +21,25 @@ public class TestPalindrome {
     public void testisPalindrome() {
         assertTrue(palindrome.isPalindrome(""));
         assertTrue(palindrome.isPalindrome(" "));
-        assertFalse(palindrome.isPalindrome("AB"));
+        assertFalse(palindrome.isPalindrome("ab"));
         assertTrue(palindrome.isPalindrome("  "));
-        assertTrue(palindrome.isPalindrome("RaceCar"));
-        assertTrue(palindrome.isPalindrome("NOon"));
-        assertFalse(palindrome.isPalindrome("JoshHug"));
+        assertFalse(palindrome.isPalindrome("abc"));
+        assertFalse(palindrome.isPalindrome("abA"));
+        assertTrue(palindrome.isPalindrome("AcA"));
+        assertTrue(palindrome.isPalindrome("racecar"));
+        assertTrue(palindrome.isPalindrome("noon"));
+        assertFalse(palindrome.isPalindrome("joshhug"));
     }
 
     @Test
-    public void testOverloadedIsPalindrome() {
+    public void testIsPalindromeOffByOne() {
+        CharacterComparator cc = new OffByOne();
         assertTrue(palindrome.isPalindrome(" ", cc));
-        assertTrue(palindrome.isPalindrome("AB", cc));
-        assertTrue(palindrome.isPalindrome("ACb", cc));
-        assertTrue(palindrome.isPalindrome("rACbq", cc));
-        assertTrue(palindrome.isPalindrome("%ACb&", cc));
-        assertFalse(palindrome.isPalindrome("AbDCE", cc));
+        assertTrue(palindrome.isPalindrome("ab", cc));
+        assertTrue(palindrome.isPalindrome("acb", cc));
+        assertTrue(palindrome.isPalindrome("racbq", cc));
+        assertFalse(palindrome.isPalindrome("racbQ", cc));
+        assertTrue(palindrome.isPalindrome("%acb&", cc));
+        assertFalse(palindrome.isPalindrome("abdce", cc));
     }
 }
