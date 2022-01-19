@@ -36,8 +36,4 @@ public class TestArrayDequeGold {
             }
         }
     }
-
-    public static void main (String[] args) {
-
-    }
 }
