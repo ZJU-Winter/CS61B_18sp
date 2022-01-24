@@ -1,8 +1,6 @@
 package synthesizer;
 import java.util.Iterator;
 
-//TODO: Make sure to make this class and all of its methods public
-//TODO: Make sure to make this class extend AbstractBoundedQueue<t>
 public class ArrayRingBuffer<T> extends AbstractBoundedQueue<T> {
     /* Index for the next dequeue or peek. */
     private int first;
@@ -11,41 +9,10 @@ public class ArrayRingBuffer<T> extends AbstractBoundedQueue<T> {
     /* Array for storing the buffer data. */
     private T[] rb;
 
-    @Override
-    public Iterator<T> iterator() {
-        return new bufferIterator();
-    }
-
-    private class bufferIterator implements Iterator<T> {
-        int position;
-
-        bufferIterator() {
-            position = first;
-        }
-
-        @Override
-        public boolean hasNext() {
-            return position < last;
-        }
-
-        @Override
-        public T next() {
-            T value = rb[position];
-            position += 1;
-            return value;
-        }
-
-    }
-
     /**
      * Create a new ArrayRingBuffer with the given capacity.
      */
     public ArrayRingBuffer(int capacity) {
-        // TODO: Create new array with capacity elements.
-        //       first, last, and fillCount should all be set to 0.
-        //       this.capacity should be set appropriately. Note that the local variable
-        //       here shadows the field we inherit from AbstractBoundedQueue, so
-        //       you'll need to use this.capacity to set the capacity.
         this.capacity = capacity;
         this.fillCount = 0;
         this.first = 0;
@@ -89,6 +56,9 @@ public class ArrayRingBuffer<T> extends AbstractBoundedQueue<T> {
      */
     @Override
     public T peek() {
+        if (isEmpty()) {
+            throw new RuntimeException("Ring Buffer Underflow");
+        }
         return rb[first];
     }
 
@@ -100,15 +70,29 @@ public class ArrayRingBuffer<T> extends AbstractBoundedQueue<T> {
         return temp;
     }
 
-    public static void main(String[] args) {
-        ArrayRingBuffer<Double> rb = new ArrayRingBuffer<>(4);
-        for (int i = 0; i < 4; i += 1) {
-            rb.enqueue((double) i);
-        }
-        for (int i = 0; i < 4; i += 1) {
-            System.out.println(rb.dequeue());
-        }
+    @Override
+    public Iterator<T> iterator() {
+        return new BufferIterator();
     }
 
-    // TODO: When you get to part 5, implement the needed code to support iteration.
+    private class BufferIterator implements Iterator<T> {
+        int position;
+
+        BufferIterator() {
+            position = first;
+        }
+
+        @Override
+        public boolean hasNext() {
+            return position < last;
+        }
+
+        @Override
+        public T next() {
+            T value = rb[position];
+            position += 1;
+            return value;
+        }
+
+    }
 }
