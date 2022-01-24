@@ -17,14 +17,18 @@ public class GuitarString {
         for (int i = 0; i < buffer.capacity(); i += 1) {
             buffer.enqueue(.0);
         }
-        for (int i = 0; i < buffer.capacity(); i += 1) {
-            buffer.dequeue();
-        }
+
     }
 
 
     /* Pluck the guitar string by replacing the buffer with white noise. */
     public void pluck() {
+        /* Attention : Do not clear the buffer in the constructor.
+         * clear it in the pluck()
+         */
+        for (int i = 0; i < buffer.capacity(); i += 1) {
+            buffer.dequeue();
+        }
         for (int i = 0; i < buffer.capacity(); i += 1) {
             buffer.enqueue(Math.random() - 0.5);
         }
