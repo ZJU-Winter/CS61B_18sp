@@ -6,9 +6,13 @@ import byog.TileEngine.Tileset;
 public class Room extends World {
     private static final int MAX_WIDTH = 10;
     private static final int MAX_HEIGHT = 10;
+    private static final int MIN_WIDTH = 3;
+    private static final int MIN_HEIGHT = 3;
     private static final int MAX_MOUNT = 5;
-    private static Position startPoint = new Position(getRandomLength(10), getRandomLength(10));
     private static int rightBound;
+    private static Position startPoint =
+            new Position(RandomUtils.uniform(RANDOM, MIN_WIDTH, MAX_WIDTH),
+                    RandomUtils.uniform(RANDOM, MIN_HEIGHT, MAX_HEIGHT));
 
     Position leftBottom;
     int height;
@@ -75,40 +79,12 @@ public class Room extends World {
         addFloor(world, room);
     }
 
-    /**
-     * rubbish
-     *
-     * @param bound is bound
-     * @return rubbish
-     */
-    private static int getRandomNonZero(int bound) {
-        int nonZero = RANDOM.nextInt(bound);
-        while (nonZero == 0) {
-            nonZero = RANDOM.nextInt(bound);
-        }
-        return nonZero;
-    }
-
-    /**
-     * rubbish
-     *
-     * @param bound is bound
-     * @return rubbish
-     */
-    private static int getRandomLength(int bound) {
-        int greaterThanThree = RANDOM.nextInt(bound);
-        while (greaterThanThree < 4) {
-            greaterThanThree = RANDOM.nextInt(bound);
-        }
-        return greaterThanThree;
-    }
-
     private static Position getVerticalPosition(Position start) {
-        Position p = new Position(start.x + getRandomNonZero(MAX_WIDTH) - MAX_WIDTH / 2,
-                start.y + getRandomNonZero(MAX_HEIGHT / 2));
+        Position p = new Position(start.x + RandomUtils.uniform(RANDOM, -MAX_WIDTH / 2, MAX_WIDTH),
+                start.y + RandomUtils.uniform(RANDOM, MAX_HEIGHT / 2));
         while (p.x < 0) {
-            p = new Position(start.x + getRandomNonZero(MAX_WIDTH) - MAX_WIDTH / 2,
-                    start.y + getRandomNonZero(MAX_HEIGHT / 2));
+            p = new Position(start.x + RandomUtils.uniform(RANDOM, -MAX_WIDTH / 2, MAX_WIDTH),
+                    start.y + RandomUtils.uniform(RANDOM, MAX_HEIGHT / 2));
         }
         return p;
     }
@@ -121,8 +97,12 @@ public class Room extends World {
 
     private static Room randomSizeOfRooms(Position leftBottom) {
         return new Room(leftBottom,
-                getRandomLength(MAX_WIDTH),
-                getRandomLength(MAX_HEIGHT));
+                RandomUtils.uniform(RANDOM, MIN_WIDTH, MAX_WIDTH),
+                RandomUtils.uniform(RANDOM, MIN_HEIGHT, MAX_HEIGHT));
+    }
+
+    private static void updateRightBound() {
+        
     }
 
     public static void addVerticalRooms(TETile[][] world) {
@@ -147,6 +127,5 @@ public class Room extends World {
             startPoint = getVerticalPosition(leftTop);
         }
     }
-
 
 }
