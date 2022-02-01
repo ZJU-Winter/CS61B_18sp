@@ -4,24 +4,26 @@ import byog.TileEngine.TETile;
 import byog.TileEngine.Tileset;
 
 public class Room extends World {
-    private static final int MAX_WIDTH = 10;
-    private static final int MAX_HEIGHT = 10;
+    private static final int MAX_WIDTH = 9;
+    private static final int MAX_HEIGHT = 9;
     private static final int MIN_WIDTH = 3;
     private static final int MIN_HEIGHT = 3;
-    private static final int MAX_MOUNT = 5;
+    private static final int LOOP_AMOUNT = 5;
+    private static final int MIN_VERTICAL_AMOUNT = 2;
+    private static final int MAX_VERTICAL_AMOUNT = 5;
+    private static final int HORIZONTAL_AMOUNT = 8;
     private static int rightBound;
     private static Position startPoint =
             new Position(RandomUtils.uniform(RANDOM, MIN_WIDTH, MAX_WIDTH),
                     RandomUtils.uniform(RANDOM, MIN_HEIGHT, MAX_HEIGHT));
-
     Position leftBottom;
-    int height;
     int width;
+    int height;
 
-    Room(Position p, int height, int width) {
-        this.leftBottom = p;
-        this.height = height;
+    Room(Position leftBottom, int width, int height) {
+        this.leftBottom = leftBottom;
         this.width = width;
+        this.height = height;
     }
 
     @Override
@@ -32,11 +34,19 @@ public class Room extends World {
         return info;
     }
 
-    public Position getLeftTop() {
+    private Position getLeftTop() {
         return new Position(this.leftBottom.x, this.leftBottom.y + this.height);
     }
 
-    private static void addFloor(TETile[][] world, Room room) {
+    private Position getRightTop() {
+        return new Position(this.leftBottom.x + this.width, this.leftBottom.y + this.height);
+    }
+
+    private Position getMiddleTop() {
+        return new Position(this.leftBottom.x + this.width / 2, this.leftBottom.y + this.height);
+    }
+
+    protected static void addFloor(TETile[][] world, Room room) {
         int xCoord, yCoord;
         int xStart = room.leftBottom.x + 1;
         int yStart = room.leftBottom.y + 1;
@@ -47,7 +57,7 @@ public class Room extends World {
         }
     }
 
-    private static void addXOfRoom(TETile[][] world, Room room) {
+    protected static void addXOfRoom(TETile[][] world, Room room) {
         int xCoord;
         int yCoord = room.leftBottom.y;
         int xStart = room.leftBottom.x;
@@ -60,7 +70,7 @@ public class Room extends World {
         }
     }
 
-    private static void addYOfRoom(TETile[][] world, Room room) {
+    protected static void addYOfRoom(TETile[][] world, Room room) {
         int xCoord = room.leftBottom.x;
         int yCoord;
         int yStart = room.leftBottom.y + 1;
@@ -73,20 +83,20 @@ public class Room extends World {
         }
     }
 
-    private static void addRoom(TETile[][] world, Room room) {
+    public static void addRoom(TETile[][] world, Room room) {
         addXOfRoom(world, room);
         addYOfRoom(world, room);
         addFloor(world, room);
     }
 
     private static Position getVerticalPosition(Position start) {
-        Position p = new Position(start.x + RandomUtils.uniform(RANDOM, -MAX_WIDTH / 2, MAX_WIDTH),
+        return new Position(start.x + RandomUtils.uniform(RANDOM, -2, 5),
                 start.y + RandomUtils.uniform(RANDOM, MAX_HEIGHT / 2));
-        while (p.x < 0) {
-            p = new Position(start.x + RandomUtils.uniform(RANDOM, -MAX_WIDTH / 2, MAX_WIDTH),
-                    start.y + RandomUtils.uniform(RANDOM, MAX_HEIGHT / 2));
-        }
-        return p;
+    }
+
+    private static Position getHorizontalPosition() {
+        return new Position(rightBound + RandomUtils.uniform(RANDOM, -2, 5),
+                RandomUtils.uniform(RANDOM, HEIGHT / 2));
     }
 
     private static boolean checkLegalRoom(Room room) {
@@ -95,25 +105,35 @@ public class Room extends World {
                 (room.leftBottom.y + room.height) < HEIGHT;
     }
 
-    private static Room randomSizeOfRooms(Position leftBottom) {
+    private static Room randomSizeOfRoom(Position leftBottom) {
         return new Room(leftBottom,
                 RandomUtils.uniform(RANDOM, MIN_WIDTH, MAX_WIDTH),
                 RandomUtils.uniform(RANDOM, MIN_HEIGHT, MAX_HEIGHT));
     }
 
-    private static void updateRightBound() {
-        
+    private void updateRightBound() {
+        int newRightBound = this.getRightTop().x;
+        if (newRightBound > rightBound)
+            rightBound = newRightBound;
+    }
+
+    private static void printInfo(Room room) {
+        System.out.println("StartPoint is: " + startPoint);
+        System.out.println(room);
+        System.out.println("Right Top Position is: " + room.getRightTop());
+        System.out.println("Now RightBound is: " + rightBound);
     }
 
     public static void addVerticalRooms(TETile[][] world) {
-        for (int i = 0; i < MAX_MOUNT; i += 1) {
+        int VERTICAL_AMOUNT = RandomUtils.uniform(RANDOM, MIN_VERTICAL_AMOUNT, MAX_VERTICAL_AMOUNT);
+        for (int i = 0; i < VERTICAL_AMOUNT; i += 1) {
             int count = 0;
             boolean legalFlag = true;
-            Room room = randomSizeOfRooms(startPoint);
+            Room room = randomSizeOfRoom(startPoint);
             while (!checkLegalRoom(room)) {
-                room = randomSizeOfRooms(startPoint);
+                room = randomSizeOfRoom(startPoint);
                 count += 1;
-                if (count == MAX_MOUNT) {
+                if (count == LOOP_AMOUNT) {
                     legalFlag = false;
                     break;
                 }
@@ -121,10 +141,20 @@ public class Room extends World {
             if (!legalFlag) {
                 break;
             }
-            System.out.println(room);
+            room.updateRightBound();
             Position leftTop = room.getLeftTop();
             addRoom(world, room);
+            rooms.add(room);
+            //printInfo(room);
             startPoint = getVerticalPosition(leftTop);
+        }
+    }
+
+    public static void addRooms(TETile[][] world) {
+        addVerticalRooms(world);
+        for (int i = 0; i < HORIZONTAL_AMOUNT; i += 1) {
+            startPoint = getHorizontalPosition();
+            addVerticalRooms(world);
         }
     }
 

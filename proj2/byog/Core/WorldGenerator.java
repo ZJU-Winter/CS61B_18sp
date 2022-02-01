@@ -4,12 +4,8 @@ import byog.TileEngine.TERenderer;
 import byog.TileEngine.TETile;
 import byog.TileEngine.Tileset;
 
-import java.util.LinkedList;
-import java.util.List;
-
-
 public class WorldGenerator extends World {
-    private static List<Position> rooms = new LinkedList<>();
+
 
     private static void worldInitializer(TETile[][] world) {
         for (int x = 0; x < WIDTH; x += 1) {
@@ -25,8 +21,9 @@ public class WorldGenerator extends World {
 
         TETile[][] world = new TETile[WIDTH][HEIGHT];
         worldInitializer(world);
-        Room.addVerticalRooms(world);
 
+        Room.addRooms(world);
+        Hallway.test(world);
         ter.renderFrame(world);
     }
 }
