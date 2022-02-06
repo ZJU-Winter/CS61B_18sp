@@ -3,6 +3,7 @@ package lab9;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * An array based implementation of the Map61B class.
