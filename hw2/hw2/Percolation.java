@@ -45,25 +45,24 @@ public class Percolation {
         if (!checkLegal(row, col)) {
             throw new IndexOutOfBoundsException();
         }
-        if (isOpen(row, col)) {
-            return;
-        }
         grids[row][col] = true;
         openSites += 1;
         if (row == N - 1) {
             openInLast.add(col);
+        }
+        if (N == 1) {
+            union.union(0, 2);
+            return;
         }
         //right left down up
         int[] directions = {0, 1, 0, -1, 1, 0, -1, 0};
         for (int i = 0; i < 8; i += 2) {
             int newRow = row + directions[i];
             int newCol = col + directions[i + 1];
-            if (checkLegal(newRow, newCol)) {
-                if (isOpen(newRow, newCol)) {
-                    union.union(toInt(row, col), toInt(newRow, newCol));
-                    union2.union(toInt(row, col), toInt(newRow, newCol));
-                    updateLastRow();
-                }
+            if (checkLegal(newRow, newCol) && isOpen(newRow, newCol)) {
+                union.union(toInt(row, col), toInt(newRow, newCol));
+                union2.union(toInt(row, col), toInt(newRow, newCol));
+                updateLastRow();
             }
         }
     }

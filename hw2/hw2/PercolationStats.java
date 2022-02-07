@@ -19,6 +19,10 @@ public class PercolationStats {
             while (!percolation.percolates()) {
                 row = StdRandom.uniform(N);
                 col = StdRandom.uniform(N);
+                if (percolation.isOpen(row, col)) {
+                    row = StdRandom.uniform(N);
+                    col = StdRandom.uniform(N);
+                }
                 percolation.open(row, col);
             }
             results[i] = percolation.numberOfOpenSites();
