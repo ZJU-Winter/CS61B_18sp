@@ -45,8 +45,12 @@ public class Percolation {
         if (!checkLegal(row, col)) {
             throw new IndexOutOfBoundsException();
         }
-        grids[row][col] = true;
-        openSites += 1;
+        if (!grids[row][col]) {
+            grids[row][col] = true;
+            openSites += 1;
+        } else {
+            return;
+        }
         if (row == N - 1) {
             openInLast.add(col);
         }
