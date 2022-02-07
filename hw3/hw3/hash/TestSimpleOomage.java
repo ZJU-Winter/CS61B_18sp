@@ -28,7 +28,7 @@ public class TestSimpleOomage {
         for (int i = 0; i <= 51; i += 1) {
             for (int j = 0; j <= 51; j += 1) {
                 for (int k = 0; k <= 51; k += 1) {
-                    SimpleOomage so = new SimpleOomage(i * 5, j *5, k * 5);
+                    SimpleOomage so = new SimpleOomage(i * 5, j * 5, k * 5);
                     assertFalse(hashCodes.contains(so.hashCode()));
                     hashCodes.add(so.hashCode());
                 }

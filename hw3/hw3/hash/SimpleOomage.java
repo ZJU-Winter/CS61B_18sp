@@ -17,8 +17,9 @@ public class SimpleOomage implements Oomage {
         if (this == other) {
             return true;
         }
-        if (other == null)
+        if (other == null) {
             return false;
+        }
         if (this.getClass() != other.getClass()) {
             return false;
         }

@@ -7,7 +7,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 public class TestComplexOomage {
 
@@ -39,22 +38,22 @@ public class TestComplexOomage {
     public void testWithDeadlyParams() {
         List<Oomage> deadlyList = new ArrayList<>();
         int N = StdRandom.uniform(100);
-        List<Integer> deadlyParameter = deadlyParameter();
         for (int i = 0; i < N; i += 1) {
+            List<Integer> deadlyParameter = deadlyParameter();
             ComplexOomage co = new ComplexOomage(deadlyParameter);
             deadlyList.add(co);
         }
         assertTrue(OomageTestUtility.haveNiceHashCodeSpread(deadlyList, 10));
     }
 
-    private List deadlyParameter() {
-        int N = StdRandom.uniform(4, 10);
-        List<Integer> deadlyList = new ArrayList<>(12);
-        for(int i = 0; i < 4; i += 1) {
-            deadlyList.add(250 + i);
-        }
-        for (int i = 4; i < N; i += 1) {
+    private List<Integer> deadlyParameter() {
+        int N = StdRandom.uniform(10, 20);
+        List<Integer> deadlyList = new ArrayList<>();
+        for (int i = 0; i < N - 4; i += 1) {
             deadlyList.add(StdRandom.uniform(255));
+        }
+        for (int i = 0; i < 4; i += 1) {
+            deadlyList.add(250 + i);
         }
         return deadlyList;
     }
