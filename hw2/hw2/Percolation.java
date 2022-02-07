@@ -45,12 +45,16 @@ public class Percolation {
         if (!checkLegal(row, col)) {
             throw new IndexOutOfBoundsException();
         }
+        if (isOpen(row, col)) {
+            return;
+        }
         grids[row][col] = true;
         openSites += 1;
         if (row == N - 1) {
             openInLast.add(col);
         }
-        int[] directions = {0, 1, 0, -1, 1, 0, -1, 0};//right left down up
+        //right left down up
+        int[] directions = {0, 1, 0, -1, 1, 0, -1, 0};
         for (int i = 0; i < 8; i += 2) {
             int newRow = row + directions[i];
             int newCol = col + directions[i + 1];
@@ -92,7 +96,6 @@ public class Percolation {
     }
 
     private boolean checkLegal(int row, int col) {
-        int N = grids.length;
         return (row < N) && (row > -1)
                 && (col < N) && (col > -1);
     }
