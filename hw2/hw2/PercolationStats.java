@@ -4,8 +4,6 @@ import edu.princeton.cs.introcs.StdRandom;
 import edu.princeton.cs.introcs.StdStats;
 
 public class PercolationStats {
-    private double mean;
-    private double stdDev;
     private double[] results;
 
     public PercolationStats(int N, int T, PercolationFactory pf) {
@@ -27,23 +25,21 @@ public class PercolationStats {
             }
             results[i] = percolation.numberOfOpenSites() / Math.pow(N, 2);
         }
-        this.mean = StdStats.mean(results);
-        this.stdDev = StdStats.stddev(results);
     }
 
     public double mean() {
-        return this.mean;
+        return StdStats.mean(results);
     }
 
     public double stddev() {
-        return this.stdDev;
+        return StdStats.stddev(results);
     }
 
     public double confidenceLow() {
-        return mean - 1.96 * stdDev / Math.sqrt(results.length);
+        return mean() - 1.96 * stddev() / Math.sqrt(results.length);
     }
 
     public double confidenceHigh() {
-        return mean + 1.96 * stdDev / Math.sqrt(results.length);
+        return mean() + 1.96 * stddev() / Math.sqrt(results.length);
     }
 }
