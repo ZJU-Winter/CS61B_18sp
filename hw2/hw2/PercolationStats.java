@@ -6,14 +6,14 @@ import edu.princeton.cs.introcs.StdStats;
 public class PercolationStats {
     private double mean;
     private double stdDev;
-    private int[] results;
+    private double[] results;
 
     public PercolationStats(int N, int T, PercolationFactory pf) {
-        if (T < 0 || N < 0) {
+        if (T <= 0 || N <= 0) {
             throw new IllegalArgumentException();
         }
         int row, col;
-        results = new int[T];
+        results = new double[T];
         for (int i = 0; i < T; i += 1) {
             Percolation percolation = pf.make(N);
             while (!percolation.percolates()) {
@@ -25,7 +25,7 @@ public class PercolationStats {
                 }
                 percolation.open(row, col);
             }
-            results[i] = percolation.numberOfOpenSites();
+            results[i] = percolation.numberOfOpenSites() / Math.pow(N, 2);
         }
         this.mean = StdStats.mean(results);
         this.stdDev = StdStats.stddev(results);
