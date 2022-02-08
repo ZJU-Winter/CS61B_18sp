@@ -157,18 +157,31 @@ public class BSTMap<K extends Comparable<K>, V> implements Map61B<K, V>, Iterabl
         if (target.right == null && target.left == null) {
             target = null;
         } else if (target.right == null) {
-            target.key = target.left.key;
-            target.value = target.left.value;
-            target.left = null;
+            Node reminderOfOriginal = target.left;
+            target.key = reminderOfOriginal.key;
+            target.value = reminderOfOriginal.value;
+            target.left = reminderOfOriginal.left;
+            target.right = reminderOfOriginal.right;
+            reminderOfOriginal = null;
         } else if (target.left == null) {
-            target.key = target.right.key;
-            target.value = target.right.value;
-            target.right = null;
+            Node reminderOfOriginal = target.right;
+            target.key = reminderOfOriginal.key;
+            target.value = reminderOfOriginal.value;
+            target.left = reminderOfOriginal.left;
+            target.right = reminderOfOriginal.right;
+            reminderOfOriginal = null;
         } else {
             Node min = findMin(target.right);
             target.key = min.key;
             target.value = min.value;
-            min = null;
+            if (min.right != null) {
+                Node reminderOfOriginal = min.right;
+                min.key = reminderOfOriginal.key;
+                min.value = reminderOfOriginal.value;
+                min.left = reminderOfOriginal.left;
+                min.right = reminderOfOriginal.right;
+                reminderOfOriginal = null;
+            } else min = null;
         }
     }
 
