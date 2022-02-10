@@ -113,7 +113,6 @@ public class ArrayHeap<T> implements ExtrinsicPQ<T> {
             curNode = getNode(index);
             parentNode = getNode(parentIndex);
         }
-        return;
     }
 
     /**
@@ -126,7 +125,7 @@ public class ArrayHeap<T> implements ExtrinsicPQ<T> {
         Node left = getNode(leftIndex(index));
         Node right = getNode(rightIndex(index));
         Node cur = getNode(index);
-        while (right != null && (cur.myPriority > left.myPriority || cur.myPriority > right.myPriority)) {
+        while (left != null && cur.myPriority > getNode(min(leftIndex(index), rightIndex(index))).myPriority) {
             int minIndex = min(leftIndex(index), rightIndex(index));
             swap(index, minIndex);
             index = minIndex;
@@ -134,7 +133,6 @@ public class ArrayHeap<T> implements ExtrinsicPQ<T> {
             right = getNode(rightIndex(index));
             cur = getNode(index);
         }
-        return;
     }
 
     /**
@@ -150,7 +148,6 @@ public class ArrayHeap<T> implements ExtrinsicPQ<T> {
         contents[size + 1] = new Node(item, priority);
         size += 1;
         swim(size);
-        return;
     }
 
     /**
@@ -159,8 +156,7 @@ public class ArrayHeap<T> implements ExtrinsicPQ<T> {
      */
     @Override
     public T peek() {
-        /* TODO: Your code here! */
-        return null;
+        return contents[1].myItem;
     }
 
     /**
@@ -174,8 +170,11 @@ public class ArrayHeap<T> implements ExtrinsicPQ<T> {
      */
     @Override
     public T removeMin() {
-        /* TODO: Your code here! */
-        return null;
+        T item = peek();
+        swap(1, size);
+        size -= 1;
+        sink(1);
+        return item;
     }
 
     /**
@@ -197,9 +196,12 @@ public class ArrayHeap<T> implements ExtrinsicPQ<T> {
      */
     @Override
     public void changePriority(T item, double priority) {
-        /* TODO: Your code here! */
-        return;
+        for (int i = 1; i <= size; i += 1) {
+            if (contents[i].myItem.equals(item))
+                contents[i].myPriority = priority;
+        }
     }
+
 
     /**
      * Prints out the heap sideways. Provided for you.
