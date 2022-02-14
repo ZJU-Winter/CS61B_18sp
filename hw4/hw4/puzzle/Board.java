@@ -4,8 +4,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class Board implements WorldState {
-    int[][] tiles;
-    int size;
+    private int[][] tiles;
+    private int size;
 
     public Board(int[][] tiles) {
         this.size = tiles.length;
