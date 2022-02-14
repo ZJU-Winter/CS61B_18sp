@@ -115,6 +115,17 @@ public class Board implements WorldState {
         }
     }
 
+    @Override
+    public int hashCode() {
+        int hashcode = 0;
+        for (int i = 0; i < size; i += 1) {
+            for (int j = 0; j < size; j += 1) {
+                hashcode = hashcode * 7 + tiles[i][j];
+            }
+        }
+        return hashcode;
+    }
+
     public String toString() {
         StringBuilder s = new StringBuilder();
         int N = size();

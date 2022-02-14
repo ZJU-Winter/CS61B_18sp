@@ -6,21 +6,22 @@ import java.util.List;
 
 public class Solver {
     private int totalMoves;
-    private searchNode answer;
-    private class searchNode implements Comparable<searchNode>{
+    private SearchNode answer;
+
+    private class SearchNode implements Comparable<SearchNode> {
         WorldState worldState;
         int moves;
         int priority;
-        searchNode prev;
+        SearchNode prev;
 
-        searchNode(WorldState worldstate) {
+        SearchNode(WorldState worldstate) {
             this.worldState = worldstate;
             this.moves = 0;
             this.prev = null;
             this.priority = worldstate.estimatedDistanceToGoal() + this.moves;
         }
 
-        searchNode(WorldState worldstate, int moves, searchNode prev) {
+        SearchNode(WorldState worldstate, int moves, SearchNode prev) {
             this.worldState = worldstate;
             this.moves = moves;
             this.prev = prev;
@@ -28,16 +29,16 @@ public class Solver {
         }
 
         @Override
-        public int compareTo(searchNode other) {
+        public int compareTo(SearchNode other) {
             return this.priority > other.priority ? 1 : -1;
         }
     }
 
     public Solver(WorldState initial) {
-        MinPQ<searchNode> pq = new MinPQ<>();
-        pq.insert(new searchNode(initial));
+        MinPQ<SearchNode> pq = new MinPQ<>();
+        pq.insert(new SearchNode(initial));
         while (true) {
-            searchNode cur = pq.delMin();
+            SearchNode cur = pq.delMin();
             if (cur.worldState.isGoal()) {
                 totalMoves = cur.moves;
                 answer = cur;
@@ -45,13 +46,17 @@ public class Solver {
             }
             for (WorldState neighborState : cur.worldState.neighbors()) {
                 if (cur.prev == null) {
-                    searchNode neighborNode = new searchNode(neighborState,cur.moves + 1, cur);
+                    SearchNode neighborNode = new SearchNode(neighborState, cur.moves + 1, cur);
                     pq.insert(neighborNode);
-                    //System.out.println("WORD:" + neighborNode.worldState + " VALUE:" + neighborNode.priority);
+                    //System.out.println("WORD:" + neighborNode.worldState
+                    // +
+                    // " VALUE:" + neighborNode.priority);
                 } else if (!neighborState.equals(cur.prev.worldState)) {
-                    searchNode neighborNode = new searchNode(neighborState,cur.moves + 1, cur);
+                    SearchNode neighborNode = new SearchNode(neighborState, cur.moves + 1, cur);
                     pq.insert(neighborNode);
-                    //System.out.println("WORD:" + neighborNode.worldState + " VALUE:" + neighborNode.priority);
+                    //System.out.println("WORD:" + neighborNode.worldState
+                    // +
+                    // " VALUE:" +neighborNode.priority);
                 }
             }
         }
@@ -63,8 +68,8 @@ public class Solver {
 
     public Iterable<WorldState> solution() {
         List<WorldState> solution = new LinkedList<>();
-        searchNode ptr = answer;
-        while(ptr != null) {
+        SearchNode ptr = answer;
+        while (ptr != null) {
             solution.add(0, ptr.worldState);
             ptr = ptr.prev;
         }
