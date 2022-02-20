@@ -86,10 +86,10 @@ public class MergeSort {
             Queue<Item> items) {
         Queue<Queue<Item>> singleItemQueue = makeSingleItemQueues(items);
         Queue<Item> rst = new Queue<>();
-        Queue<Item> start = singleItemQueue.dequeue();
+        Queue<Item> prev = singleItemQueue.dequeue();
         while (!singleItemQueue.isEmpty()) {
-            rst = mergeSortedQueues(start, singleItemQueue.dequeue());
-            start = rst;
+            rst = mergeSortedQueues(prev, singleItemQueue.dequeue());
+            prev = rst;
         }
         return rst;
     }

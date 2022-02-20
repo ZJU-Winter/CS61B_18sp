@@ -1,5 +1,7 @@
 import edu.princeton.cs.algs4.Queue;
+import org.junit.Test;
 
+import static org.junit.Assert.*;
 public class QuickSort {
     /**
      * Returns a new queue that contains the given queues catenated together.
@@ -47,13 +49,69 @@ public class QuickSort {
     private static <Item extends Comparable> void partition(
             Queue<Item> unsorted, Item pivot,
             Queue<Item> less, Queue<Item> equal, Queue<Item> greater) {
-        // Your code here!
+        for (Item item : unsorted) {
+            if (item.compareTo(pivot) < 0) {
+                less.enqueue(item);
+            } else if (item.compareTo(pivot) == 0) {
+                equal.enqueue(item);
+            } else {
+                greater.enqueue(item);
+            }
+        }
     }
 
-    /** Returns a Queue that contains the given items sorted from least to greatest. */
+    /**
+     * Returns a Queue that contains the given items sorted from least to greatest.
+     */
     public static <Item extends Comparable> Queue<Item> quickSort(
             Queue<Item> items) {
-        // Your code here!
-        return items;
+        if (items.size() == 1 || items.isEmpty()) {
+            return items;
+        }
+        Item pivot = getRandomItem(items);
+        Queue<Item> less = new Queue<>();
+        Queue<Item> equal = new Queue<>();
+        Queue<Item> greater = new Queue<>();
+        partition(items, pivot, less, equal, greater);
+        less = quickSort(less);
+        greater = quickSort(greater);
+        return catenate(catenate(less, equal), greater);
+    }
+
+    @Test
+    public void testPartition() {
+        Queue<Integer> nums = new Queue<>();
+        for (int i = 20; i > 10; i -= 1) {
+            nums.enqueue(i);
+        }
+        int pivot = getRandomItem(nums);
+        Queue<Integer> less = new Queue<>();
+        Queue<Integer> equal = new Queue<>();
+        Queue<Integer> greater = new Queue<>();
+        partition(nums, pivot, less, equal, greater);
+        for (int item : less) {
+            assertTrue(item < pivot);
+        }
+        for (int item : equal) {
+            assertEquals(item, pivot);
+        }
+        for (int item : greater) {
+            assertTrue(item > pivot);
+        }
+    }
+
+    public static void main(String[] args) {
+        Queue<Integer> nums = new Queue<>();
+        Queue<Integer> rst = new Queue<>();
+        for (int i = 20; i > 10; i -= 1) {
+            nums.enqueue(i);
+        }
+        System.out.println("The original Queue Before sorted: " + nums);
+        rst = quickSort(nums);
+        System.out.println("The original Queue after sorted: " + nums);
+        System.out.println("The sorted Queue: " + rst);
+        for (int i = 11; i <= 20; i += 1) {
+            assertEquals((Integer) i, rst.dequeue());
+        }
     }
 }
