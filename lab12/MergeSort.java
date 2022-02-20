@@ -47,11 +47,6 @@ public class MergeSort {
         return rst;
     }
 
-    private static <Item extends Comparable> void addRest(Queue<Item> rst, Queue<Item> target) {
-        while (!target.isEmpty()) {
-            rst.enqueue(target.dequeue());
-        }
-    }
 
     /**
      * Returns a new queue that contains the items in q1 and q2 in sorted order.
@@ -68,13 +63,8 @@ public class MergeSort {
     private static <Item extends Comparable> Queue<Item> mergeSortedQueues(
             Queue<Item> q1, Queue<Item> q2) {
         Queue<Item> rst = new Queue<>();
-        while (!q1.isEmpty() && !q2.isEmpty()) {
+        while (!q1.isEmpty() || !q2.isEmpty()) {
             rst.enqueue(getMin(q1, q2));
-        }
-        if (q1.isEmpty()) {
-            addRest(rst, q2);
-        } else {
-            addRest(rst, q1);
         }
         return rst;
     }
