@@ -2902,7 +2902,7 @@ Goal: Find shortest path between s and every other vertex
     *   Remove vertex x from the fringe (dequeue)
     *   For each unmarked neighbor n of v:
         *   mark n, add n to fringe (enqueue)
-        *   Set edgeTo[n] = v, set disTo[n] = disTo[v] + 
+        *   Set edgeTo[n] = v, set disTo[n] = disTo[v] + 1
 
 ##### Graph Representation
 
@@ -2951,3 +2951,602 @@ O (V + E) for the DFS
 
 *   Each vertex is visited at most once O(V) `dfs()`
 *   Each edge is considered at most twice O(E) `marked[w]`
+
+#### Shortest Paths
+
+*   BFS finds you the **shortest** paths whereas DFS does not
+
+BFS yields the wrong route since it
+
+*   We need an algorithm that take edge distances into account
+
+
+
+Observation: Solution will always be a tree
+
+Number of edges in Shortest Paths Tree is V - 1, V is the number of vertices
+
+
+
+##### Finding a shortest Paths Tree Algorithmically (Incorrect)
+
+![image-20220211200414696](/Users/winter/Desktop/Introduction to Algorithms/CS61B/Learning_CS61B.assets/image-20220211200414696.png)
+
+![image-20220211201339005](/Users/winter/Desktop/Introduction to Algorithms/CS61B/Learning_CS61B.assets/image-20220211201339005.png)
+
+![image-20220211201657323](/Users/winter/Desktop/Introduction to Algorithms/CS61B/Learning_CS61B.assets/image-20220211201657323.png)
+
+##### Dijkstra's Algorithm
+
+*   Insert all vertices into fringe PQ, storing vertices in oder of distance from souce
+*   Repeat:
+    *   Remove (closest) vertex V from PQ, and relax all edges pointing from v
+        *   Change priority !
+*   Note: impossible for any inactive vertex to be improved
+
+[demo](https://docs.google.com/presentation/d/1_bw2z1ggUkquPdhl7gwdVBoTaoJmaZdpkV6MoAgxlJc/pub?start=false&loop=false&delayms=3000&slide=id.g771336078_0_751)
+
+![image-20220211203116478](/Users/winter/Desktop/Introduction to Algorithms/CS61B/Learning_CS61B.assets/image-20220211203116478.png)
+
+```python
+def dijkstras(source):
+    PQ.add(source, 0)
+    For all other vertices, v, PQ.add(v, infinity)
+    while PQ is not empty:
+        p = PQ.removeSmallest()
+        relax(all edges from p)
+```
+
+```python
+def relax(edge p,q):
+   if q is visited (i.e., q is not in PQ):
+       return
+
+   if distTo[p] + weight(edge) < distTo[q]:
+       distTo[q] = distTo[p] + w
+       edgeTo[q] = p
+       PQ.changePriority(q, distTo[q])
+```
+
+*   edgeTo[v] is the best known predecessor of v
+*   disTo[v] is the best know total distance from souce
+*   PQ contains all unvisited vertices in order of disTo
+
+##### Important properties:
+
+*   Always visits vertices in order of total distance from source
+*   Relaxation always fails on edges to visited vertices
+
+##### Runtime
+
+*   PQ operations
+    *   `insert`:V, each costing O(log V) time
+    *   `removeSmallest`: V, each costing O(log V) time
+    *   `changePriority`: E, each costing O(log V) time 
+
+##### A*
+
+The problem with Dijkstra's: we have only a single target in mind
+
+We need two target! Like navigating, from one place to another
+
+*   Visit vertices in order of disTo[v] + h(v, goal)
+    *   Estimate is an arbitrary heuristic h(v, goal)
+        *   Heuristic: using experience to learn and improve
+
+![image-20220211212600583](/Users/winter/Desktop/Introduction to Algorithms/CS61B/Learning_CS61B.assets/image-20220211212600583.png)
+
+#### Minimal Spanning Tree
+
+##### Warm-up Problem
+
+Determine if a undirected graph contains any cycles
+
+*   Approach 1: DFS
+    *   Keep going until you see a marked vertex
+    *   Don't count the node you came from
+
+*   Approach 1: WeightedQuickUnion
+    *   For each edge, check if the two vertices are connected
+        *   If not, union them
+        *   If so, there is a cycle
+
+##### Spanning Tree
+
+Given an undirected graph, a spanning tree T is a subgraph of G, where T
+
+*   Is connected
+*   Is acyclic
+*   Includes all of the vertices
+
+Minimum spanning tree is a spanning tree of minimum total weight
+
+##### The Cut Property
+
+*   A **cut** is an assignment of a graph's nodes to two non-empty sets
+*   A **crossing edge** is an edge which connects a node from one set to another
+
+Cut property: Given any cut, minimum weigh crossing edge is in the MST
+
+<img src="/Users/winter/Desktop/Introduction to Algorithms/CS61B/Learning_CS61B.assets/image-20220212133812172.png" alt="image-20220212133812172" style="zoom:50%;" /> 
+
+Start with no edges in the MST
+
+*   Find a cut that has no crossing edges in the MST
+*   Add Smallest crossing edge to the MST
+*   Repeat until V - 1 edges
+
+##### Prim's Algorithm
+
+Start from some arbitrary start node
+
+*   Use the marked nodes set and unmarked nodes set to be the **cut**
+*   Add the minimum crossing edge to the MST
+
+<img src="/Users/winter/Desktop/Introduction to Algorithms/CS61B/Learning_CS61B.assets/image-20220212150629966.png" alt="image-20220212150629966" style="zoom:50%;" />
+
+<img src="/Users/winter/Desktop/Introduction to Algorithms/CS61B/Learning_CS61B.assets/image-20220212150851695.png" alt="image-20220212150851695" style="zoom:50%;" />
+
+<img src="/Users/winter/Desktop/Introduction to Algorithms/CS61B/Learning_CS61B.assets/image-20220212150944627.png" alt="image-20220212150944627" style="zoom:50%;" />
+
+<img src="/Users/winter/Desktop/Introduction to Algorithms/CS61B/Learning_CS61B.assets/image-20220212150814135.png" alt="image-20220212150814135" style="zoom:50%;" />
+
+##### Prims Efficiency
+
+*   Insert all vertices into fringe PQ, storing vertices in order of distance from tree
+    *   Repeat: Remove vertex V from PQ, and relax all edges pointing from V
+
+<img src="/Users/winter/Desktop/Introduction to Algorithms/CS61B/Learning_CS61B.assets/image-20220212200352974.png" alt="image-20220212200352974" style="zoom:50%;" />
+
+<img src="/Users/winter/Desktop/Introduction to Algorithms/CS61B/Learning_CS61B.assets/image-20220212200417350.png" alt="image-20220212200417350" style="zoom:50%;" />
+
+![image-20220212200554252](/Users/winter/Desktop/Introduction to Algorithms/CS61B/Learning_CS61B.assets/image-20220212200554252.png)
+
+![image-20220212200613720](/Users/winter/Desktop/Introduction to Algorithms/CS61B/Learning_CS61B.assets/image-20220212200613720.png)
+
+##### Prim's vs. Dijkstra's
+
+They are exactly the same, except Dijkstra's considers "distance from the source", and Prim's considers "distance from the tree"
+
+##### Prim's Runtime
+
+*   PQ operations
+
+    *   `insert`:V, each costing O(log V) time
+
+    *   `removeSmallest`: V, each costing O(log V) time
+
+    *   `changePriority`: O(E), each costing O(log V) time 
+
+##### Kruskal's
+
+consider edges in order of increasing weight. Add to MST unless a cycle is created
+
+*   Repeat until V - 1 edges
+
+##### Implementation
+
+`WQU[]:detecting cycles`
+
+`MST[]:adding edges`
+
+`A PQ Fringe`
+
+<img src="/Users/winter/Desktop/Introduction to Algorithms/CS61B/Learning_CS61B.assets/image-20220212210220554.png" alt="image-20220212210220554" style="zoom:50%;" />
+
+*   Remove edge 0 - 2
+    *   Cycle? isConnected(0,2)?
+        *   No. Union(0,2), add (e)
+
+<img src="/Users/winter/Desktop/Introduction to Algorithms/CS61B/Learning_CS61B.assets/image-20220212210348493.png" alt="image-20220212210348493" style="zoom:50%;" />
+
+*   Remove edge 2 - 4
+    *   Cycle? isConnected(2,4)?
+        *   No. Union(2,4),add(e)
+
+<img src="/Users/winter/Desktop/Introduction to Algorithms/CS61B/Learning_CS61B.assets/image-20220212210450980.png" alt="image-20220212210450980" style="zoom:50%;" />
+
+*   Remove edge 3 - 6
+    *   Cycle? isConnected(3,6)?
+        *   No. Union(3,6), add(e)
+
+<img src="/Users/winter/Desktop/Introduction to Algorithms/CS61B/Learning_CS61B.assets/image-20220212210535646.png" alt="image-20220212210535646" style="zoom:50%;" />
+
+....
+
+<img src="/Users/winter/Desktop/Introduction to Algorithms/CS61B/Learning_CS61B.assets/image-20220212211018966.png" alt="image-20220212211018966" style="zoom:50%;" />
+
+<img src="/Users/winter/Desktop/Introduction to Algorithms/CS61B/Learning_CS61B.assets/image-20220212211037730.png" alt="image-20220212211037730" style="zoom:50%;" />
+
+<img src="/Users/winter/Desktop/Introduction to Algorithms/CS61B/Learning_CS61B.assets/image-20220212211104765.png" alt="image-20220212211104765" style="zoom:50%;" />
+
+##### Runtime
+
+<img src="/Users/winter/Desktop/Introduction to Algorithms/CS61B/Learning_CS61B.assets/image-20220212213238615.png" alt="image-20220212213238615" style="zoom:50%;" />
+
+<img src="/Users/winter/Desktop/Introduction to Algorithms/CS61B/Learning_CS61B.assets/image-20220212214146719.png" alt="image-20220212214146719" style="zoom:50%;" />
+
+#### Multidimensional Data
+
+##### Set Operations
+
+*   `select(int i)`:select ith smallest item in the set
+*   `rank(int i)`:opposite operation to the select
+*   `subSet(T from, T to)`:return all items between from and to
+*   `nearest(int i)`: if we have a notion of distance between items
+
+##### Why BSTs are not ideal for 2D data
+
+Trying to build a BST of Body objects in 2D space.
+
+*   Earth.x = 1.5, earth.y = 1.6
+*   mars.x = 1.0, mars.y = 2.8
+
+Need some notion of "less than":
+
+*   Choose x or y
+
+<img src="/Users/winter/Desktop/Introduction to Algorithms/CS61B/Learning_CS61B.assets/image-20220213121915678.png" alt="image-20220213121915678" style="zoom:50%;" />
+
+<img src="/Users/winter/Desktop/Introduction to Algorithms/CS61B/Learning_CS61B.assets/image-20220213122520824.png" alt="image-20220213122520824" style="zoom:50%;" />
+
+*   No way to find nodes whose x is less than -1.5
+*   Pruning the right side
+
+![image-20220213122947493](/Users/winter/Desktop/Introduction to Algorithms/CS61B/Learning_CS61B.assets/image-20220213122947493.png)
+
+*   Can't pruning
+
+![image-20220213123013738](/Users/winter/Desktop/Introduction to Algorithms/CS61B/Learning_CS61B.assets/image-20220213123013738.png)
+
+##### QuadTrees
+
+*   Every node has four children
+    *   Top left
+    *   Top right
+    *   Bottom left
+    *   Bottom right
+
+##### QuadTree Range Search
+
+<img src="/Users/winter/Desktop/Introduction to Algorithms/CS61B/Learning_CS61B.assets/image-20220213124734935.png" alt="image-20220213124734935" style="zoom:50%;" />
+
+*   A in the box? NO
+    *   Which subspace? NE
+*   B in the box? YES
+    *   Add to the rest
+    *   Which subspace? All four
+*   B' NW NE SE are null
+*   C in the box? NO
+    *   Which subspace? NE
+
+##### KdTree Insertion
+
+*   3-D
+
+<img src="/Users/winter/Desktop/Introduction to Algorithms/CS61B/Learning_CS61B.assets/image-20220213130748675.png" alt="image-20220213130748675" style="zoom:50%;" />
+
+*   K-d Tree: means "k-dimensional"
+    *   Example, want to find songs according to
+        *   length
+        *   listens
+        *   BPM
+        *   Recorded date
+*   K-d tree example for 2-d:
+    *   Basic idea, root node partitions entire space into left and right **by x**
+    *   All depth 1 nodes partition subspace into up and down **by y**
+    *   All depth 2 nodes partition subspace into left and right **by x**
+
+<img src="/Users/winter/Desktop/Introduction to Algorithms/CS61B/Learning_CS61B.assets/image-20220213164840587.png" alt="image-20220213164840587" style="zoom:50%;" />
+
+<img src="/Users/winter/Desktop/Introduction to Algorithms/CS61B/Learning_CS61B.assets/image-20220213164850689.png" alt="image-20220213164850689" style="zoom:50%;" />
+
+##### K d Tree Nearest Finding
+
+<img src="/Users/winter/Desktop/Introduction to Algorithms/CS61B/Learning_CS61B.assets/image-20220213172211685.png" alt="image-20220213172211685" style="zoom:50%;" />
+
+Find nearest to (0,7)
+
+*   Search A, best is A
+    *   Left first (more promising part)
+*   Search B, best is B
+    *   Up first
+
+<img src="/Users/winter/Desktop/Introduction to Algorithms/CS61B/Learning_CS61B.assets/image-20220213173309663.png" alt="image-20220213173309663" style="zoom:50%;" />
+
+*   Finish searching **good side**
+    *   Is there could be anything better? YES
+    *   Search down
+
+<img src="/Users/winter/Desktop/Introduction to Algorithms/CS61B/Learning_CS61B.assets/image-20220213173731565.png" alt="image-20220213173731565" style="zoom:50%;" />
+
+*   Finish searching dow
+    *   Is there could be anything better? YES
+    *   Search right
+
+<img src="/Users/winter/Desktop/Introduction to Algorithms/CS61B/Learning_CS61B.assets/image-20220213195615204.png" alt="image-20220213195615204" style="zoom:50%;" />
+
+#### Trie
+
+##### Set of Strings
+
+Suppose we have a set containing "sam", "sad", "sap", "same", "a" and "awls"
+
+<img src="/Users/winter/Desktop/Introduction to Algorithms/CS61B/Learning_CS61B.assets/image-20220215192024422.png" alt="image-20220215192024422" style="zoom:50%;" />
+
+<img src="/Users/winter/Desktop/Introduction to Algorithms/CS61B/Learning_CS61B.assets/image-20220215192048159.png" alt="image-20220215192048159" style="zoom:50%;" />
+
+##### Intro to Trie
+
+For String keys, use Trie
+
+*   Every node stores only one letter
+*   Nodes can be shared by multiple keys
+
+<img src="/Users/winter/Desktop/Introduction to Algorithms/CS61B/Learning_CS61B.assets/image-20220215192714159.png" alt="image-20220215192714159" style="zoom:50%;" />
+
+*   But it is not clear if some specific key exists
+
+<img src="/Users/winter/Desktop/Introduction to Algorithms/CS61B/Learning_CS61B.assets/image-20220215192840495.png" alt="image-20220215192840495" style="zoom:50%;" />
+
+*   Contains("sam"): true, blue node
+*   Contains("sa"): false, white node ---> miss
+*   contains("a"):true, blue node
+*   Contains("saq"): false, fell off tree ---> miss
+
+Two ways to have a search "miss":
+
+*   If the final node is white
+*   If fall off tree
+
+##### Trie Map
+
+<img src="/Users/winter/Desktop/Introduction to Algorithms/CS61B/Learning_CS61B.assets/image-20220215193252171.png" alt="image-20220215193252171" style="zoom:50%;" />
+
+##### Basic Trie Implementation
+
+```java
+public class TrieSet {
+  private static final int R = 128;
+  private Node root;
+  
+  private static class Node {
+    private char ch;
+    private boolean isKey;
+    private DataIndexedCharMap next;
+    private Node(char c, boolean b, int R) {
+      ch = c;
+      isKey = b;
+      next = new DataIndexedCharMap<Node>(R);
+    }
+  }
+}
+
+public class DataIndexedCharMap<V> {
+  private V[] items;
+  public DataIndexedCharMap(int R) {
+    items = (V[]) new Object[R];
+  }
+}
+```
+
+<img src="/Users/winter/Desktop/Introduction to Algorithms/CS61B/Learning_CS61B.assets/image-20220215195739993.png" alt="image-20220215195739993" style="zoom:50%;" />
+
+128 links, with one used, and 127 are null
+
+*   And since the ch is redundant, just remove it
+
+##### Performance in Terms of N
+
+N is the number of keys
+
+*   Add runtime: Θ(1)
+*   Contains runtime:Θ(1)
+
+##### Alternate Child Tracking Strategies
+
+<img src="/Users/winter/Desktop/Introduction to Algorithms/CS61B/Learning_CS61B.assets/image-20220215203728259.png" alt="image-20220215203728259" style="zoom:50%;" />
+
+![image-20220215203715169](/Users/winter/Desktop/Introduction to Algorithms/CS61B/Learning_CS61B.assets/image-20220215203715169.png)
+
+![image-20220215203931323](/Users/winter/Desktop/Introduction to Algorithms/CS61B/Learning_CS61B.assets/image-20220215203931323.png)
+
+##### String Operations
+
+*   Finding the longest prefix of a string
+*   Finding all keys that match a given prefix
+
+
+
+Give an algorithm for collecting all the keys in a Trie:
+
+Collect():
+
+*   Create an empty list of results x;
+*   For character c in root.next.keys():
+    *   Call colHelp("c", x, root.next.get(c))
+*   Return x
+
+colHelp(String s, List<String> x, Node n) :
+
+*   If n.isKey, then x.add(s)
+*   For character c in n.next.keys() :
+    *   Call colHelp(s + c, x, n.next.get((c)))
+
+<img src="/Users/winter/Desktop/Introduction to Algorithms/CS61B/Learning_CS61B.assets/image-20220215210047050.png" alt="image-20220215210047050" style="zoom:50%;" />
+
+Give an algorithm for keysWithPrefix
+
+*   Find the node a corresponding to the string.
+*   Create an empty list x
+*   For character c in a.next.keys():
+    *   Call colHelper("sa" + c, x, a.next.get(c))
+
+<img src="/Users/winter/Desktop/Introduction to Algorithms/CS61B/Learning_CS61B.assets/image-20220215210438208.png" alt="image-20220215210438208" style="zoom:50%;" />
+
+#### Reductions and Decomposition
+
+##### Topological Sort
+
+Suppose we have tasks 0 through 7, where an arrow from v to w indicates that v must happen before w.
+
+<img src="/Users/winter/Desktop/Introduction to Algorithms/CS61B/Learning_CS61B.assets/image-20220216183100200.png" alt="image-20220216183100200" style="zoom:50%;" />
+
+Perform a DFS traversal from every vertex with degree 0, NOT clearing markings in between traversals
+
+*   record DFS postorder in a list: [7, 4, 1, 3, 0, 6, 5, 2]
+*   Topological ordering is given by the reverse of that list
+    *   [2, 5, 6, 0, 3, 1, 4, 7]
+
+Depth First Search
+
+*   Sometimes mean with restarts
+    *   Topological Sort
+*   Sometimes mean without restarts
+    *   DepthFirstPaths for reachability
+
+##### Shortest Path with negative edges a.k.a. DAG SPT Algorithm
+
+If we allow negative edges, Dijkstra's algorithm can fail
+
+Visit it in topological order
+
+*   When we visit a vertex: relax all of its going edges
+
+##### The Longest Paths Problem
+
+Really hard, no great solution yet
+
+##### The Longest Paths Problem on DAGs
+
+<img src="/Users/winter/Desktop/Introduction to Algorithms/CS61B/Learning_CS61B.assets/image-20220217195537194.png" alt="image-20220217195537194" style="zoom:50%;" />
+
+<img src="/Users/winter/Desktop/Introduction to Algorithms/CS61B/Learning_CS61B.assets/image-20220217195554158.png" alt="image-20220217195554158" style="zoom:50%;" />
+
+*   Form a new copy of the graph G' with signs of all edges weights flipped
+*   Run DAGSPT on the G' yielding result x
+*   Flip signs of all values in X.distTo, X.edgeTo is correct
+
+##### Reduction
+
+The problem solving we just used probably felt a little different than usual
+
+*   Given a graph G, we created a new graph G' and fed it to a related algorithm, and then interpreted the result
+
+<img src="/Users/winter/Desktop/Introduction to Algorithms/CS61B/Learning_CS61B.assets/image-20220217200451912.png" alt="image-20220217200451912" style="zoom:50%;" />
+
+#### Sorting
+
+##### Inversion
+
+*   an inversion is a pair of elements that are out of order with respect to <
+    *   another way to state the goal of sorting:
+        *   Given a sequence of elements with Z inversions
+        *   Perform a sequence of operations that reduces inversions to 0
+
+##### Performance Definitions
+
+*   Dijkstra's has time complexity O(E log V)
+*   Dijkstra's has space complexity Θ(V) (for queues distTo, edgeTo)
+    *   Note that the graph takes up space Θ(V + E), but we don't count this as part of the space complexity since the graph itself is an input to Dijkstra's
+
+##### Selection Sort
+
+*   Find the smallest item in the unsorted portion of the array.
+*   Swap this item to the end of the sorted portion
+*   Repeat for unfixed items until all items are fixed
+    *   Θ(N^2)
+
+##### HeapSort
+
+*   Insert all items into a **Max Heap**, and discard input array. Create the output array
+    *   O(N log N)
+*   Repeat N times:
+    *   Deleted largest item from the max heap
+        *   N * O(logN)
+    *   Put the largest item at the end of the unused part of the output array
+        *   N * Θ(1)
+*   Total runtime
+    *   O(N log N)
+*   Space complexity
+    *   O(N)
+
+<img src="/Users/winter/Desktop/Introduction to Algorithms/CS61B/Learning_CS61B.assets/image-20220219122219956.png" alt="image-20220219122219956" style="zoom:50%;" />
+
+
+
+<img src="/Users/winter/Desktop/Introduction to Algorithms/CS61B/Learning_CS61B.assets/image-20220219122231515.png" alt="image-20220219122231515" style="zoom:50%;" />
+
+
+
+<img src="/Users/winter/Desktop/Introduction to Algorithms/CS61B/Learning_CS61B.assets/image-20220219122248350.png" alt="image-20220219122248350" style="zoom:50%;" />
+
+##### In-place Heap Sort
+
+###### Phase 1: Heapification
+
+*   Bottom- up heapify the input array:
+    *   Sink nodes in **reverse level order**: sink(k)
+    *   after sinking, guaranteed that tree rooted at position k is a heap
+
+<img src="/Users/winter/Desktop/Introduction to Algorithms/CS61B/Learning_CS61B.assets/image-20220219125652572.png" alt="image-20220219125652572" style="zoom:50%;" />
+
+<img src="/Users/winter/Desktop/Introduction to Algorithms/CS61B/Learning_CS61B.assets/image-20220219125708199.png" alt="image-20220219125708199" style="zoom:50%;" />
+
+<img src="/Users/winter/Desktop/Introduction to Algorithms/CS61B/Learning_CS61B.assets/image-20220219125904617.png" alt="image-20220219125904617" style="zoom:50%;" />
+
+<img src="/Users/winter/Desktop/Introduction to Algorithms/CS61B/Learning_CS61B.assets/image-20220219125920437.png" alt="image-20220219125920437" style="zoom:50%;" />
+
+<img src="/Users/winter/Desktop/Introduction to Algorithms/CS61B/Learning_CS61B.assets/image-20220219130026668.png" alt="image-20220219130026668" style="zoom:50%;" />
+
+<img src="/Users/winter/Desktop/Introduction to Algorithms/CS61B/Learning_CS61B.assets/image-20220219130102053.png" alt="image-20220219130102053" style="zoom:50%;" />
+
+###### Phase 2
+
+*   repeat N times:
+    *   Delete largest item from the max heap， swapping root with last item in the heap.
+
+<img src="/Users/winter/Desktop/Introduction to Algorithms/CS61B/Learning_CS61B.assets/image-20220219130631271.png" alt="image-20220219130631271" style="zoom:50%;" />
+
+<img src="/Users/winter/Desktop/Introduction to Algorithms/CS61B/Learning_CS61B.assets/image-20220219130658246.png" alt="image-20220219130658246" style="zoom:50%;" />
+
+<img src="/Users/winter/Desktop/Introduction to Algorithms/CS61B/Learning_CS61B.assets/image-20220219130757020.png" alt="image-20220219130757020" style="zoom:50%;" />
+
+##### Runtime
+
+*   Time complexity
+    *   O(N log N)
+*   Space complexity
+    *   Θ(1)
+
+##### Merge Sort
+
+*   Split items into 2 roughly even pieces.
+*   Merge sort each half (recursive)
+*   Merge the two sorted halves to form the final results
+
+<img src="/Users/winter/Desktop/Introduction to Algorithms/CS61B/Learning_CS61B.assets/image-20220219132024633.png" alt="image-20220219132024633" style="zoom:50%;" />
+
+
+
+<img src="/Users/winter/Desktop/Introduction to Algorithms/CS61B/Learning_CS61B.assets/image-20220219132100130.png" alt="image-20220219132100130" style="zoom:50%;" />
+
+##### Insertion Sort
+
+*   Starting with an empty output sequence
+*   Add each item from the input, inserting into output at the right point
+
+##### In-place Insertion Sort
+
+*   Repeat for i = 0 to N - 1:
+    *    Designate item I as the traveling item
+    *   Swap item backward until traveler is in the right place
+        *   Use j pointer to track current sort of traveling item
+
+|                      | Best Case Runtime | Worst Case Runtime | Space |                             Demo                             |               Notes               |
+| :------------------: | :---------------: | :----------------: | :---: | :----------------------------------------------------------: | :-------------------------------: |
+|    Selection Sort    |      Θ(N^2)       |       Θ(N^2)       | Θ(1)  |                                                              |                                   |
+| Heap Sort (in place) |       Θ(N)        |     Θ(N log N)     | Θ(1)  | [Link](https://docs.google.com/presentation/d/1z1lCiLSVLKoyUOIFspy1vxyEbe329ntLAVDQP3xjmnU/pub?start=false&loop=false&delayms=3000) |    Bad cache (61C) performance    |
+|      MergeSort       |    Θ(N log N)     |     Θ(N log N)     | Θ(N)  | [Link](https://docs.google.com/presentation/d/1h-gS13kKWSKd_5gt2FPXLYigFY4jf5rBkNFl3qZzRRw/pub?start=false&loop=false&delayms=3000) |         Fastest of these          |
+|    Insertion Sort    |       Θ(N)        |       Θ(N^2)       | Θ(1)  | [Link](https://docs.google.com/presentation/d/10b9aRqpGJu8pUk8OpfqUIEEm8ou-zmmC7b_BE5wgNg0/pub?start=false&loop=false&delayms=3000) | Best for small N or almost sorted |
+
