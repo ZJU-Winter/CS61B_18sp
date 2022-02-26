@@ -14,6 +14,11 @@ public class CountingSortTester {
      **/
     private static int[] nonNegative = {9, 5, 2, 1, 5, 3, 0, 3, 1, 1};
 
+    private static String[] strings = {"Hello", "This", "is", "Winter", "From", "ZJU"};
+
+    private static String[] stringTest = {"This", "IS", "Another", "Test",
+            "String", "For", "L", "S", "D", "Sorting", "Sorting"};
+
     public static void assertIsSorted(int[] a) {
         int previous = Integer.MIN_VALUE;
         for (int x : a) {
@@ -21,6 +26,7 @@ public class CountingSortTester {
             previous = x;
         }
     }
+
 
     @Test
     public void testNaiveWithNonNegative() {
@@ -51,6 +57,14 @@ public class CountingSortTester {
     public void testBetterWithSomeNegative() {
         int[] sortedSomeNegative = CountingSort.betterCountingSort(someNegative);
         assertIsSorted(sortedSomeNegative);
+    }
+
+    @Test
+    public void testLSDSorting() {
+        String[] rst = RadixSort.sort(stringTest);
+        for (int i = 0; i < rst.length - 1; i += 1) {
+            assertTrue(rst[i].compareTo(rst[i + 1]) <= 0);
+        }
     }
 
 

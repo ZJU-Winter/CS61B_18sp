@@ -2,7 +2,6 @@
  * Class for doing Radix sort
  *
  * @author Akhil Batra, Alexander Hwang
- *
  */
 public class RadixSort {
     /**
@@ -16,8 +15,16 @@ public class RadixSort {
      * @return String[] the sorted array
      */
     public static String[] sort(String[] asciis) {
-        // TODO: Implement LSD Sort
-        return null;
+        int length = 0;
+        String[] copy = new String[asciis.length];
+        System.arraycopy(asciis, 0, copy, 0, asciis.length);
+        for (String string : asciis) {
+            length = Math.max(length, string.length());
+        }
+        for (int i = length - 1; i >= 0; i -= 1) {
+            sortHelperLSD(copy, i);
+        }
+        return copy;
     }
 
     /**
@@ -27,8 +34,26 @@ public class RadixSort {
      * @param index The position to sort the Strings on.
      */
     private static void sortHelperLSD(String[] asciis, int index) {
-        // Optional LSD helper method for required LSD radix sort
-        return;
+        int[] counts = new int[257];
+        for (String string : asciis) {
+            counts[asciiAt(string, index) + 1] += 1;
+        }
+
+        int position = 0;
+        int[] start = new int[257];
+        for (int i = 0; i < 257; i += 1) {
+            start[i] = position;
+            position += counts[i];
+        }
+
+        String[] sorted = new String[asciis.length];
+        for (String string : asciis) {
+            int item = asciiAt(string, index) + 1;
+            int place = start[item];
+            sorted[place] = string;
+            start[item] += 1;
+        }
+        System.arraycopy(sorted, 0, asciis, 0, asciis.length);
     }
 
     /**
@@ -44,5 +69,13 @@ public class RadixSort {
     private static void sortHelperMSD(String[] asciis, int start, int end, int index) {
         // Optional MSD helper method for optional MSD radix sort
         return;
+    }
+
+    private static int asciiAt(String string, int index) {
+        if (index >= string.length()) {
+            return -1;
+        } else {
+            return (int) string.charAt(index);
+        }
     }
 }
