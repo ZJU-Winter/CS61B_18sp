@@ -80,6 +80,15 @@ public class CountingSort {
             counts[num + offset] += 1;
         }
 
+        //Better Approach For Integers Only
+        int[] sorted = new int[arr.length];
+        int index = 0;
+        for (int i = 0; i < counts.length; i += 1) {
+            for (int j = 0; j < counts[i]; j += 1, index += 1) {
+                sorted[index] = i - offset;
+            }
+        }
+        /*
         int position = 0;
         int[] starts = new int[length];
         for (int i = 0; i < length; i += 1) {
@@ -92,7 +101,7 @@ public class CountingSort {
             int place = starts[num + offset];
             sorted[place] = num;
             starts[num + offset] += 1;
-        }
+        }*/
 
         return sorted;
     }
