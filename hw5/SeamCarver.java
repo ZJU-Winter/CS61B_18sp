@@ -21,43 +21,64 @@ public class SeamCarver {
         return picture.height();
     }
 
-    private double calcGradient(Color x, Color y) {
-        return (x.getGreen() - y.getGreen()) * (x.getGreen() - y.getGreen())
-                + (x.getBlue() - y.getBlue()) * (x.getBlue() - y.getBlue())
-                + (x.getRed() - y.getRed()) * (x.getRed() - y.getRed());
-    }
-
-    private double deltaX2(int x, int y) {
-        int right = Math.floorMod(x + 1, width());
-        int left = Math.floorMod(x - 1, width());
-        return calcGradient(picture.get(right, y), picture.get(left, y));
-    }
-
-    private double deltaY2(int x, int y) {
-        int top = Math.floorMod(y + 1, height());
-        int bottom = Math.floorMod(y - 1, height());
-        return calcGradient(picture.get(x, top), picture.get(x, bottom));
-    }
-
     public double energy(int x, int y) {
-        if (x < 0 || x >= width() || y < 0 || y >= height()) {
-            throw new IndexOutOfBoundsException();
-        }
-        return deltaX2(x, y) + deltaY2(x, y);
+        int deltaX, deltaY;
+        Color left = getLeft(x, y);
+        Color right = getRight(x, y);
+        Color up = getUp(x, y);
+        Color down = getDown(x, y);
+        int Rx = right.getRed() - left.getRed();
+        int Gx = right.getGreen() - left.getGreen();
+        int Bx = right.getBlue() - left.getBlue();
+        deltaX = Rx * Rx + Gx * Gx + Bx * Bx;
+
+        int Ry = up.getRed() - down.getRed();
+        int Gy = up.getGreen() - down.getGreen();
+        int By = up.getBlue() - down.getBlue();
+        deltaY = Ry * Ry + Gy * Gy + By * By;
+        return deltaX + deltaY;
     }
 
-    private int indexOfMin(double[] energy, int start, int end) {
-        if (start > end) {
+    private Color getLeft(int x, int y) {
+        if (x == 0) {
+            x = width();
+        }
+        return picture.get(x - 1, y);
+    }
+
+    private Color getRight(int x, int y) {
+        if (x == width() - 1) {
+            x = -1;
+        }
+        return picture.get(x + 1, y);
+    }
+
+    private Color getUp(int x, int y) {
+        if (y == 0) {
+            y = height();
+        }
+        return picture.get(x, y - 1);
+    }
+
+    private Color getDown(int x, int y) {
+        if (y == height() - 1) {
+            y = -1;
+        }
+        return picture.get(x, y + 1);
+    }
+
+    private int indexOfMin(double[] energy, int left, int right) {
+        if (left > right) {
             throw new IndexOutOfBoundsException();
         }
-        if (end >= energy.length) {
-            end = energy.length - 1;
+        if (right >= energy.length) {
+            right = energy.length - 1;
         }
-        if (start < 0) {
-            start = 0;
+        if (left < 0) {
+            left = 0;
         }
-        int index = start;
-        for (int i = start; i <= end; i++) {
+        int index = left;
+        for (int i = left; i <= right; i++) {
             if (energy[index] > energy[i]) {
                 index = i;
             }
