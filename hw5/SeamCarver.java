@@ -27,15 +27,15 @@ public class SeamCarver {
         Color right = getRight(x, y);
         Color up = getUp(x, y);
         Color down = getDown(x, y);
-        int Rx = right.getRed() - left.getRed();
-        int Gx = right.getGreen() - left.getGreen();
-        int Bx = right.getBlue() - left.getBlue();
-        deltaX = Rx * Rx + Gx * Gx + Bx * Bx;
+        int rx = right.getRed() - left.getRed();
+        int gx = right.getGreen() - left.getGreen();
+        int bx = right.getBlue() - left.getBlue();
+        deltaX = rx * rx + gx * gx + bx * bx;
 
-        int Ry = up.getRed() - down.getRed();
-        int Gy = up.getGreen() - down.getGreen();
-        int By = up.getBlue() - down.getBlue();
-        deltaY = Ry * Ry + Gy * Gy + By * By;
+        int ry = up.getRed() - down.getRed();
+        int gy = up.getGreen() - down.getGreen();
+        int by = up.getBlue() - down.getBlue();
+        deltaY = ry * ry + gy * gy + by * by;
         return deltaX + deltaY;
     }
 
@@ -156,5 +156,4 @@ public class SeamCarver {
         }
         picture = SeamRemover.removeVerticalSeam(picture, seam);
     }
-
 }
